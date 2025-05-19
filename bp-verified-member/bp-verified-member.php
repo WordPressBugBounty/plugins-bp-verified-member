@@ -2,10 +2,10 @@
 /**
  * Plugin name: Verified Member for BuddyPress
  * Plugin URI:  https://wordpress.org/plugins/bp-verified-member/
- * Description: This plugins allows admins to add a "Verified" badge for specific members.
+ * Description: Allows admins to add a "Verified" badge for specific members.
  * Author:      Themosaurus
  * Author URI:  https://themosaurus.com/
- * Version:     1.2.7
+ * Version:     1.2.8
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: bp-verified-member
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BP_VERIFIED_MEMBER_VERSION',         '1.2.7' );
+define( 'BP_VERIFIED_MEMBER_VERSION',         '1.2.8' );
 define( 'BP_VERIFIED_MEMBER_PLUGIN_FILE',     __FILE__ );
 define( 'BP_VERIFIED_MEMBER_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BP_VERIFIED_MEMBER_PLUGIN_DIR_URL',  plugin_dir_url( __FILE__ ) );

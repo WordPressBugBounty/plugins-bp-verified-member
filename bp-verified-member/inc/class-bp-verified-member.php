@@ -23,7 +23,7 @@ class BP_Verified_Member {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		load_plugin_textdomain( 'bp-verified-member', false, 'bp-verified-member/languages' );
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 
 		ob_start( array( $this, 'filter_html_output' ) );
 
@@ -122,6 +122,10 @@ class BP_Verified_Member {
 		add_filter( 'bp_notifications_get_registered_components',  array( $this, 'register_bp_verified_member_component'           ), 10, 2 );
 		add_action( 'bp_verified_member_verified_status_updated',  array( $this, 'create_verified_status_updated_notification'     ), 10, 2 );
 		add_filter( 'bp_notifications_get_notifications_for_user', array( $this, 'format_verified_member_notification'             ), 99, 8 );
+	}
+
+	public function load_textdomain() {
+		load_plugin_textdomain( 'bp-verified-member', false, 'bp-verified-member/languages' );
 	}
 
 	/**

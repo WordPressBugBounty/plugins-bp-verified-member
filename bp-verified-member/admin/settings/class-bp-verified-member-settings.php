@@ -45,14 +45,19 @@ if ( ! class_exists( 'BP_Verified_Member_Settings' ) ) :
 		 * BP_Verified_Member_Settings constructor.
 		 */
 		public function __construct() {
-			add_action( 'admin_menu', array( $this, 'add_option_page' ) );
-			add_action( 'admin_init', array( $this, 'page_init'       ) );
+			add_action( 'admin_menu', array( $this, 'add_option_page' ), 4 );
+			add_action( 'admin_init', array( $this, 'page_init'       )    );
 
 			if ( ! bp_core_do_network_admin() ) {
-				add_filter( 'bp_core_get_admin_tabs', array( $this, 'add_tab_in_buddypress_settings' ), 10, 1 );
-				add_action( 'bp_admin_head',          array( $this, 'remove_settings_submenu_link'   ), 999   );
+				add_filter( 'bp_core_get_admin_tabs',          array( $this, 'add_tab_in_buddypress_settings' ), 10, 1 );
+				add_filter( 'bp_core_get_admin_settings_tabs', array( $this, 'add_tab_in_buddypress_settings' ), 10, 1 );
+				add_action( 'bp_admin_head',                   array( $this, 'remove_settings_submenu_link'   ), 999   );
 			}
 
+			add_action( 'init', array( $this, 'register_defaults' ), 20 );
+		}
+
+		public function register_defaults() {
 			$this->defaults = array(
 				"{$this->option_group}_verified_roles"                    => array(),
 				"{$this->option_group}_verified_member_types"             => array(),
@@ -97,6 +102,10 @@ if ( ! class_exists( 'BP_Verified_Member_Settings' ) ) :
 			if ( ! bp_core_do_network_admin() ) {
 				add_action( "admin_head-$hook", 'bp_core_modify_admin_menu_highlight' );
 			}
+
+			add_action( 'bp_admin_submenu_pages', function( &$submenu_pages ) use ( $hook ) {
+				$submenu_pages['settings'][ $this->page_slug ] = $hook;
+			} );
 		}
 
 		/**
@@ -111,13 +120,20 @@ if ( ! class_exists( 'BP_Verified_Member_Settings' ) ) :
 
 			<div class="wrap">
 
-				<h1><?php esc_html_e( 'Verified Member Settings', 'bp-verified-member' ); ?></h1>
+				<?php if ( function_exists( 'bp_core_admin_tabbed_screen_header' ) ) : ?>
+					<?php if ( ! bp_core_do_network_admin() ) : ?>
+						<?php bp_core_admin_tabbed_screen_header( __( 'Verified Member', 'bp-verified-member' ), __( 'Verified Member', 'bp-verified-member' ) ); ?>
+					<?php endif; ?>
+				<?php else : ?>
+					<h1><?php esc_html_e( 'Verified Member Settings', 'bp-verified-member' ); ?></h1>
 
-				<?php if ( ! bp_core_do_network_admin() ) : ?>
-					<h2 class="nav-tab-wrapper"><?php bp_core_admin_tabs( __( 'Verified Member', 'bp-verified-member' ) ); ?></h2>
+					<?php if ( ! bp_core_do_network_admin() ) : ?>
+						<h2 class="nav-tab-wrapper"><?php bp_core_admin_tabs( __( 'Verified Member', 'bp-verified-member' ) ); ?></h2>
+					<?php endif; ?>
 				<?php endif; ?>
 
-				<div class="bp-verified-member-settings-container">
+
+				<div class="buddypress-body bp-verified-member-settings-container">
 
 					<form class="bp-verified-member-settings-form" method="post" action="options.php">
 						<?php
@@ -675,10 +691,21 @@ if ( ! class_exists( 'BP_Verified_Member_Settings' ) ) :
 		 * @return array The modified array of tabs.
 		 */
 		public function add_tab_in_buddypress_settings( $tabs ) {
-			$tabs['bp_verified_member'] = array(
-				'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-verified-member' ), 'options-general.php' ) ),
-				'name' => __( 'Verified Member', 'bp-verified-member' ),
-			);
+			if ( ! function_exists( 'bp_core_get_admin_settings_tabs' ) ) {
+				// Legacy method for adding settings tabs
+				$tabs['bp_verified_member'] = array(
+					'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-verified-member' ), 'options-general.php' ) ),
+					'name' => __( 'Verified Member', 'bp-verified-member' ),
+				);
+			}
+			elseif ( doing_action( 'bp_core_get_admin_settings_tabs' ) ) {
+				// New method for adding settings tabs
+				$tabs[] = array(
+					'id'   => 'bp-verified-member',
+					'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-verified-member' ), 'options-general.php' ) ),
+					'name' => __( 'Verified Member', 'bp-verified-member' ),
+				);
+			}
 
 			return $tabs;
 		}

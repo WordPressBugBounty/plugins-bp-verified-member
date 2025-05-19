@@ -2,9 +2,9 @@
 Contributors: themosaurus
 Tags: bp, verify, member, community, badge
 Requires at least: 5.4
-Tested up to: 6.0
+Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 1.2.7
+Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -84,6 +84,10 @@ The settings are located in *Settings > BuddyPress* in the *Verified Member* tab
 4. Plugin settings page
 
 == Changelog ==
+= 1.2.8 =
+* Fix PHP notice about translations being loaded too early
+* Fix PHP notice about deprecated usage of a BuddyPress function
+* Update "Tested up to" version to 6.8
 = 1.2.7 =
 * Fix fatal error when notifications settings are enabled but the Notifications component is disabled in BuddyPress
 * Fix badges tooltips in activity stream when using the BP Nouveau template pack
